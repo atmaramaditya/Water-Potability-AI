@@ -3,4 +3,6 @@ pandas
 numpy
 scikit-learn
 xgboost
+requests
 streamlit-lottie
+
