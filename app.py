@@ -20,8 +20,8 @@ def load_lottieurl(url):
         return None
 
 # Loading Animations
-lottie_water = load_lottieurl("https://lottie.host/677054f1-6718-47c0-8d54-1596541f92e8/4C0h0P8FPr.json") # Safe
-lottie_warning = load_lottieurl("https://lottie.host/880a4b73-0f73-455b-8007-9f6874c7e627/7Z2LqO1L5L.json") # Unsafe
+lottie_water = load_lottieurl("https://lottie.host/677054f1-6718-47c0-8d54-1596541f92e8/4C0h0P8FPr.json")
+lottie_warning = load_lottieurl("https://lottie.host/880a4b73-0f73-455b-8007-9f6874c7e627/7Z2LqO1L5L.json")
 
 # 3. Load assets (Model & Scaler)
 base_path = os.path.dirname(__file__)
@@ -38,10 +38,16 @@ def load_assets():
 
 model, scaler = load_assets()
 
-# 4. App Header
+# 4. App Header & Overview (MOVED TO TOP)
 st.title("💧 Water Quality Predictor")
 st.subheader("AI and Data Science Project")
-st.write("This application uses a **Random Forest** model to predict water safety based on physicochemical properties.")
+
+# --- YOUR OVERVIEW TEXT ---
+st.write("""
+This project leverages a **Random Forest Classifier** to determine water safety. 
+By analyzing physicochemical parameters, the model identifies patterns that distinguish potable water from contaminated samples.
+""")
+st.markdown("---")
 
 # 5. User Input Section
 st.markdown("### 🛠️ Enter Water Parameters")
@@ -71,12 +77,29 @@ if st.button("Predict Potability", use_container_width=True):
     st.markdown("---")
     
     if prediction[0] == 1:
-        st.balloons() # Success Animation
+        st.balloons() 
         if lottie_water:
             st_lottie(lottie_water, height=200, key="safe_anim")
         st.success("### ✅ Result: Potable (Safe to Drink)")
-        st.write("The chemical composition is within acceptable limits for human consumption.")
     else:
-        st.snow() # Warning Animation (particles)
+        st.snow() 
         if lottie_warning:
-            st_
+            st_lottie(lottie_warning, height=200, key="unsafe_anim")
+        st.error("### ❌ Result: Not Potable (Unsafe)")
+        
+        with st.expander("🔍 Why is this unsafe?"):
+            st.write("The model detected levels exceeding safety benchmarks.")
+            st.warning("Typical safe ranges: pH (6.5-8.5), Sulfate (<250), Chloramines (<4.0).")
+
+# 7. Professional Footer
+st.markdown("---")
+info_col1, info_col2 = st.columns(2)
+with info_col1:
+    st.info("**Algorithm:** Random Forest")
+    st.info("**Dataset:** Provided Project Dataset")
+
+with info_col2:
+    st.info("**Application:** Water Safety Analysis")
+    st.info("**Tools:** Streamlit, Scikit-Learn")
+
+st.caption("Developed for Mechatronics & AI Engineering Portfolio | MPSTME & BIA")
