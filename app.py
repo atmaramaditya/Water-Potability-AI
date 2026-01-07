@@ -1,3 +1,5 @@
+import requests
+from streamlit_lottie import st_lottie
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -48,19 +50,37 @@ if st.button("Predict Potability"):
     else:
 
         st.error("❌ Result: Not Potable (Unsafe)")
+# Function to load animations
+def load_lottieurl(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
 
+lottie_water = load_lottieurl("https://assets5.lottiefiles.com/packages/lf20_96bovdur.json")
+
+# After your prediction button logic:
+if prediction == 1:
+    st.balloons() # This adds a smart flying balloon animation
+    st_lottie(lottie_water, height=200, key="water")
+    st.success("The water is Potable!")
+else:
+    st.error("The water is NOT Potable.")
+
+# The Updated About Section
 st.markdown("---")
-st.subheader("Project Overview")
+st.subheader("📊 Project Details")
 st.write("""
-This **AI and Data Science Project** uses Machine Learning to predict if water is safe for human consumption based on its chemical properties. 
-The model analyzes factors like pH, Hardness, Solids, and Chloramines to make its decision.
+This **AI and Data Science Project** leverages a **Random Forest Classifier** to determine water safety. 
+By analyzing physicochemical parameters, the model identifies patterns that distinguish potable water from contaminated samples.
 """)
 
-col1, col2 = st.columns(2)
-with col1:
-    st.info("**Algorithm:** XGBoost / Random Forest")
-with col2:
-    st.info("**Dataset:** Water Quality Portability (Kaggle)")
+c1, c2 = st.columns(2)
+with c1:
+    st.info("**Algorithm:** Random Forest")
+with c2:
+    st.info("**Dataset:** Provided Project Dataset")
 
-st.write("Created as part of my Mechatronics & Data Science curriculum.")
+st.caption("Developed for Mechatronics & AI Engineering Portfolio")
+
 
