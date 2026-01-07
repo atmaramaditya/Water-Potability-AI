@@ -48,3 +48,19 @@ if st.button("Predict Potability"):
     else:
 
         st.error("❌ Result: Not Potable (Unsafe)")
+
+st.markdown("---")
+st.subheader("Project Overview")
+st.write("""
+This **AI and Data Science Project** uses Machine Learning to predict if water is safe for human consumption based on its chemical properties. 
+The model analyzes factors like pH, Hardness, Solids, and Chloramines to make its decision.
+""")
+
+col1, col2 = st.columns(2)
+with col1:
+    st.info("**Algorithm:** XGBoost / Random Forest")
+with col2:
+    st.info("**Dataset:** Water Quality Portability (Kaggle)")
+
+st.write("Created as part of my Mechatronics & Data Science curriculum.")
+
