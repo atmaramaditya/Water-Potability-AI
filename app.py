@@ -4,9 +4,18 @@ import numpy as np
 import pickle
 
 # Load the saved model and scaler
-model = pickle.load(open('water_model.pkl', 'rb'))
-scaler = pickle.load(open('scaler.pkl', 'rb'))
+import os
 
+# Get the directory where app.py is located
+base_path = os.path.dirname(__file__)
+
+# Create the full path to your files
+model_path = os.path.join(base_path, 'water_model.pkl')
+scaler_path = os.path.join(base_path, 'scaler.pkl')
+
+# Load the files using the full path
+model = pickle.load(open(model_path, 'rb'))
+scaler = pickle.load(open(scaler_path, 'rb'))
 st.set_page_config(page_title="Water Potability AI", page_icon="💧")
 
 st.title("💧 Water Quality Predictor")
@@ -37,4 +46,5 @@ if st.button("Predict Potability"):
     if prediction[0] == 1:
         st.success("✅ Result: Potable (Safe to Drink)")
     else:
+
         st.error("❌ Result: Not Potable (Unsafe)")
