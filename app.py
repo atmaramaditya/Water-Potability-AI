@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 import os
 import plotly.graph_objects as go
-import requests
 
 # 1. Page Configuration
 st.set_page_config(
@@ -13,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. IMPROVED CSS: High Contrast & Visibility
+# 2. CSS: High Contrast & Glassmorphism
 st.markdown("""
     <style>
     .stApp {
@@ -53,11 +52,54 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Asset Loading
+# 3. Asset Loading (Fixed Syntax)
 @st.cache_resource
 def load_assets():
     base_path = os.path.dirname(__file__)
+    model_path = os.path.join(base_path, 'water_model.pkl')
+    scaler_path = os.path.join(base_path, 'scaler.pkl')
+    
     try:
-        with open(os.path.join(base_path, 'water_model.pkl'), 'rb') as m_file:
+        with open(model_path, 'rb') as m_file:
             model = pickle.load(m_file)
-        with open(os.path.join(base_path, 'scaler.pkl'), 'rb') as s
+        with open(scaler_path, 'rb') as s_file:
+            scaler = pickle.load(s_file)
+        return model, scaler
+    except Exception as e:
+        st.error(f"Error loading assets: {e}")
+        return None, None
+
+model, scaler = load_assets()
+
+# 4. SIDEBAR
+with st.sidebar:
+    st.markdown("<h1 style='text-align: center; color: #00d4ff;'>💧 HydroGuard</h1>", unsafe_allow_html=True)
+    st.markdown("---")
+    st.markdown("### 👨‍🎓 Project Developer")
+    st.write("**Aditya Atmaram**")
+    st.write("B.Tech Mechatronics Candidate")
+    st.caption("MPSTME | BIA (AI & Data Science)")
+    st.markdown("---")
+    st.subheader("📡 System Status")
+    st.success("Random Forest: Online")
+    st.info("Accuracy: 65%")
+
+# 5. MAIN CONTENT
+st.markdown("""
+    <div style="background: rgba(0, 212, 255, 0.1); padding: 25px; border-radius: 15px; border-left: 10px solid #00d4ff; margin-bottom: 25px;">
+        <h1 style='margin:0; color: white;'>Intelligent Water Quality Monitor</h1>
+        <p style='margin:0; opacity: 0.9; color: #00d4ff;'>Mechatronics & Data Science Diagnostic Dashboard</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# 6. SLIDERS
+st.markdown("### 🎛️ Digital Sensor Simulation")
+c1, c2, c3 = st.columns(3)
+with c1:
+    ph = st.slider("pH Level", 0.0, 14.0, 7.0)
+    hardness = st.slider("Hardness (mg/L)", 50.0, 400.0, 196.3)
+    solids = st.slider("Solids (ppm)", 5000.0, 50000.0, 22000.0)
+with c2:
+    chloramines = st.slider("Chloramines (ppm)", 0.0, 15.0, 7.1)
+    sulfate = st.slider("Sulfate (mg/L)", 100.0, 500.0, 333.6)
+    conductivity = st.slider("Conductivity (μS/cm)", 100.0, 800.0,
