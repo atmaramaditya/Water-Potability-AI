@@ -8,47 +8,34 @@ from streamlit_lottie import st_lottie
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Water Potability AI | Aditya Atmaram", 
+    page_title="HydroGuard AI | Aditya Atmaram", 
     page_icon="💧", 
     layout="wide"
 )
 
-# Professional UI Styling
+# 2. Modern Glassmorphism CSS
 st.markdown("""
     <style>
-    [data-testid="stSidebar"] {
-        background-color: #f8f9fa;
-        border-right: 1px solid #e0e0e0;
+    .main { background-color: #f0f2f6; }
+    .stSlider { padding-bottom: 20px; }
+    .reportview-container .main .block-container { padding-top: 2rem; }
+    
+    /* Custom Card Design */
+    .status-card {
+        padding: 20px;
+        border-radius: 15px;
+        background: white;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+        border-top: 5px solid #007bff;
     }
-    .metric-card {
-        background-color: white;
-        padding: 15px;
-        border-radius: 10px;
-        border-left: 5px solid #007bff;
-        margin-bottom: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .stButton>button {
-        width: 100%;
-        border-radius: 8px;
-        height: 3em;
-        background-color: #007bff;
-        color: white;
-        font-weight: bold;
-    }
+    
+    /* Metric styling */
+    .metric-text { font-weight: bold; color: #1f77b4; font-size: 1.2rem; }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Asset Loading
-def load_lottieurl(url):
-    try:
-        r = requests.get(url)
-        return r.json() if r.status_code == 200 else None
-    except: return None
-
-lottie_water = load_lottieurl("https://lottie.host/677054f1-6718-47c0-8d54-1596541f92e8/4C0h0P8FPr.json")
-lottie_warning = load_lottieurl("https://lottie.host/880a4b73-0f73-455b-8007-9f6874c7e627/7Z2LqO1L5L.json")
-
+# 3. Asset Loading
 @st.cache_resource
 def load_assets():
     base_path = os.path.dirname(__file__)
@@ -62,99 +49,101 @@ def load_assets():
 
 model, scaler = load_assets()
 
-# 3. CLEAN & PROFESSIONAL SIDEBAR (Student/Candidate Version)
+# 4. SIDEBAR - Professional Branding
 with st.sidebar:
-    # A professional placeholder for your profile
-    st.markdown("### 👨‍🎓 Project Developer")
-    st.title("Aditya Atmaram")
-    st.write("**B.Tech Mechatronics Candidate**")
-    st.caption("Mukesh Patel School of Technology Management & Engineering")
+    st.markdown("## 🛰️ System Status")
+    st.success("Model: Random Forest (Active)")
+    st.markdown("---")
+    st.markdown("### 👨‍🎓 Developer")
+    st.write("**Aditya Atmaram**")
+    st.caption("B.Tech Mechatronics Candidate @ MPSTME")
+    st.caption("AI & Data Science @ BIA")
     st.markdown("---")
     
-    st.subheader("📊 Model Evaluation")
-    st.markdown("""
-        <div class="metric-card">
-            <small>Winning Model</small><br>
-            <strong>Random Forest</strong>
-        </div>
-        <div class="metric-card">
-            <small>Test Accuracy</small><br>
-            <strong>65%</strong>
-        </div>
-        <div class="metric-card">
-            <small>Weighted F1-Score</small><br>
-            <strong>0.64</strong>
-        </div>
-    """, unsafe_allow_html=True)
+    # Model Specs in Sidebar
+    with st.expander("📈 Model Evaluation Metrics"):
+        st.write("**Accuracy:** 65%")
+        st.write("**F1-Score:** 0.64")
+        st.write("**Precision (Class 0):** 0.69")
+
+# 5. HEADER
+col_title, col_anim = st.columns([3, 1])
+with col_title:
+    st.title("HydroGuard: AI Water Analysis")
+    st.info("Interactive Laboratory Simulation Dashboard")
+
+# 6. INTERACTIVE INPUTS (Using Sliders for better UX)
+st.markdown("### 🎛️ Digital Sensor Inputs")
+with st.container():
+    c1, c2, c3 = st.columns(3)
+    
+    with c1:
+        ph = st.slider("pH Level", 0.0, 14.0, 7.0, 0.1, help="WHO Standard: 6.5 - 8.5")
+        hardness = st.slider("Hardness (mg/L)", 50.0, 400.0, 196.3)
+        solids = st.slider("Solids (ppm)", 5000.0, 50000.0, 22000.0)
+
+    with c2:
+        chloramines = st.slider("Chloramines (ppm)", 0.0, 15.0, 7.1)
+        sulfate = st.slider("Sulfate (mg/L)", 100.0, 500.0, 333.6)
+        conductivity = st.slider("Conductivity (μS/cm)", 100.0, 800.0, 426.2)
+
+    with c3:
+        organic_carbon = st.slider("Organic Carbon (ppm)", 0.0, 30.0, 14.2)
+        trihalomethanes = st.slider("Trihalomethanes (μg/L)", 0.0, 130.0, 66.4)
+        turbidity = st.slider("Turbidity (NTU)", 0.0, 7.0, 3.9)
+
+# 7. ANALYSIS LOGIC
+if st.button("🚀 RUN SYSTEM DIAGNOSTIC", use_container_width=True):
+    input_data = np.array([[ph, hardness, solids, chloramines, sulfate, 
+                            conductivity, organic_carbon, trihalomethanes, turbidity]])
+    
+    scaled_input = scaler.transform(input_data)
+    prediction = model.predict(scaled_input)[0]
     
     st.markdown("---")
-    st.subheader("📚 Specialization")
-    st.info("Currently pursuing a Diploma in **AI and Data Science** at the Boston Institute of Analytics.")
     
-    st.markdown("---")
-    st.caption("Built for Portfolio | Jan 2026")
-
-# 4. Main App Content
-st.title("💧 Water Potability Analysis")
-st.write("Determine water safety by analyzing chemical and physical parameters using machine learning.")
-st.markdown("---")
-
-# Input Section
-col1, col2, col3 = st.columns(3)
-with col1:
-    ph = st.number_input("pH Level", 0.0, 14.0, 7.0)
-    hardness = st.number_input("Hardness (mg/L)", value=196.36)
-    solids = st.number_input("Solids (ppm)", value=22014.0)
-with col2:
-    chloramines = st.number_input("Chloramines (ppm)", value=7.12)
-    sulfate = st.number_input("Sulfate (mg/L)", value=333.60)
-    conductivity = st.number_input("Conductivity (μS/cm)", value=426.20)
-with col3:
-    organic_carbon = st.number_input("Organic Carbon (ppm)", value=14.28)
-    trihalomethanes = st.number_input("Trihalomethanes (μg/L)", value=66.40)
-    turbidity = st.number_input("Turbidity (NTU)", value=3.96)
-
-# 5. Prediction & Logic
-if st.button("Analyze Water Sample"):
-    if model and scaler:
-        input_data = np.array([[ph, hardness, solids, chloramines, sulfate, 
-                                conductivity, organic_carbon, trihalomethanes, turbidity]])
-        scaled_input = scaler.transform(input_data)
-        prediction = model.predict(scaled_input)[0]
-        
-        st.markdown("---")
-        
+    # Create Layout for Results
+    res_col1, res_col2 = st.columns([1, 2])
+    
+    with res_col1:
         if prediction == 1:
-            st.balloons()
-            st.success("### ✅ Result: Potable (Safe for Consumption)")
-            if lottie_water: st_lottie(lottie_water, height=150)
+            st.markdown('<div class="status-card" style="border-top: 5px solid #28a745;">', unsafe_allow_html=True)
+            st.header("✅ POTABLE")
+            st.write("Safe for human consumption.")
+            st.markdown('</div>', unsafe_allow_html=True)
         else:
-            st.error("### ❌ Result: Not Potable (Unsafe)")
-            if lottie_warning: st_lottie(lottie_warning, height=150)
-            
-            # Parameter Analysis (Highlighting reasons for non-potability)
-            st.subheader("🔍 Parameter Analysis (Risk Factors)")
-            st.info("The following inputs deviate from standard safety benchmarks:")
-            
-            issues_found = False
-            if not (6.5 <= ph <= 8.5):
-                st.warning(f"⚠️ **pH Level ({ph}):** Outside WHO range (6.5 - 8.5).")
-                issues_found = True
-            if chloramines > 4.0:
-                st.warning(f"⚠️ **Chloramines ({chloramines} ppm):** Exceeds safe drinking limit of 4.0 ppm.")
-                issues_found = True
-            if sulfate > 250.0:
-                st.warning(f"⚠️ **Sulfate ({sulfate} mg/L):** High levels (>250 mg/L) can cause gastrointestinal issues.")
-                issues_found = True
-            if solids > 1000.0:
-                st.warning(f"⚠️ **Total Dissolved Solids ({solids} ppm):** High TDS levels (>1000) indicate high mineralization.")
-                issues_found = True
-            
-            if not issues_found:
-                st.warning("⚠️ **Complex Interaction:** While individual parameters appear borderline, the model's multivariate analysis suggests chemical instability.")
-    else:
-        st.error("Assets not loaded.")
+            st.markdown('<div class="status-card" style="border-top: 5px solid #dc3545;">', unsafe_allow_html=True)
+            st.header("❌ UNSAFE")
+            st.write("Potentially contaminated.")
+            st.markdown('</div>', unsafe_allow_html=True)
 
+    with res_col2:
+        st.subheader("📋 Compliance Checklist")
+        
+        # Real-time parameter check table
+        check_data = {
+            "Parameter": ["pH Level", "Chloramines", "Sulfate", "Turbidity"],
+            "Value": [ph, chloramines, sulfate, turbidity],
+            "WHO Limit": ["6.5 - 8.5", "< 4.0 ppm", "< 250 mg/L", "< 5.0 NTU"],
+            "Status": [
+                "✅ Pass" if 6.5 <= ph <= 8.5 else "🛑 Fail",
+                "✅ Pass" if chloramines <= 4.0 else "🛑 Fail",
+                "✅ Pass" if sulfate <= 250.0 else "🛑 Fail",
+                "✅ Pass" if turbidity <= 5.0 else "🛑 Fail"
+            ]
+        }
+        st.table(pd.DataFrame(check_data))
+
+# 8. EDUCATIONAL SECTION (Innovative Expanders)
 st.markdown("---")
-st.caption("Developed by Aditya Atmaram | Mechatronics & AI Engineering Portfolio")
+with st.expander("📖 Learn about Water Quality Parameters"):
+    st.write("""
+    Understanding these parameters is vital for Mechatronics applications in water treatment plants:
+    * **Turbidity:** Measures water clarity using light scattering.
+    * **Conductivity:** Indicates the amount of dissolved salts.
+    * **Trihalomethanes:** Chemicals often found in water treated with chlorine.
+    """)
 
+
+
+st.caption("Developed by Aditya Atmaram | MPSTME Mechatronics Portfolio")
