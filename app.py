@@ -62,22 +62,23 @@ def load_assets():
 
 model, scaler = load_assets()
 
-# 3. CLEAN & PROFESSIONAL SIDEBAR
+# 3. CLEAN & PROFESSIONAL SIDEBAR (Student/Candidate Version)
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=80) # Generic Profile Icon
+    # A professional placeholder for your profile
+    st.markdown("### 👨‍🎓 Project Developer")
     st.title("Aditya Atmaram")
-    st.caption("Mechatronics Engineer | AI & Data Science Specialist")
+    st.write("**B.Tech Mechatronics Candidate**")
+    st.caption("Mukesh Patel School of Technology Management & Engineering")
     st.markdown("---")
     
-    st.subheader("📊 Model Performance")
-    # Custom Metric Cards for a professional look
+    st.subheader("📊 Model Evaluation")
     st.markdown("""
         <div class="metric-card">
-            <small>Winning Algorithm</small><br>
-            <strong>Random Forest Classifier</strong>
+            <small>Winning Model</small><br>
+            <strong>Random Forest</strong>
         </div>
         <div class="metric-card">
-            <small>Model Accuracy</small><br>
+            <small>Test Accuracy</small><br>
             <strong>65%</strong>
         </div>
         <div class="metric-card">
@@ -87,11 +88,11 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.subheader("🏫 Education")
-    st.markdown("""
-    * **MPSTME** (B.Tech Mechatronics)
-    * **BIA** (Diploma in AI & DS)
-    """)
+    st.subheader("📚 Specialization")
+    st.info("Currently pursuing a Diploma in **AI and Data Science** at the Boston Institute of Analytics.")
+    
+    st.markdown("---")
+    st.caption("Built for Portfolio | Jan 2026")
 
 # 4. Main App Content
 st.title("💧 Water Potability Analysis")
@@ -156,3 +157,4 @@ if st.button("Analyze Water Sample"):
 
 st.markdown("---")
 st.caption("Developed by Aditya Atmaram | Mechatronics & AI Engineering Portfolio")
+
