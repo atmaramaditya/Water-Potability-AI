@@ -13,31 +13,42 @@ st.set_page_config(
     layout="wide"
 )
 
-# Custom CSS
+# Professional UI Styling
 st.markdown("""
     <style>
+    [data-testid="stSidebar"] {
+        background-color: #f8f9fa;
+        border-right: 1px solid #e0e0e0;
+    }
+    .metric-card {
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 5px solid #007bff;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
     .stButton>button {
         width: 100%;
-        border-radius: 5px;
+        border-radius: 8px;
         height: 3em;
         background-color: #007bff;
         color: white;
+        font-weight: bold;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# 2. Helper Functions
+# 2. Asset Loading
 def load_lottieurl(url):
     try:
         r = requests.get(url)
         return r.json() if r.status_code == 200 else None
-    except:
-        return None
+    except: return None
 
 lottie_water = load_lottieurl("https://lottie.host/677054f1-6718-47c0-8d54-1596541f92e8/4C0h0P8FPr.json")
 lottie_warning = load_lottieurl("https://lottie.host/880a4b73-0f73-455b-8007-9f6874c7e627/7Z2LqO1L5L.json")
 
-# 3. Load Model & Scaler
 @st.cache_resource
 def load_assets():
     base_path = os.path.dirname(__file__)
@@ -47,88 +58,101 @@ def load_assets():
         with open(os.path.join(base_path, 'scaler.pkl'), 'rb') as s_file:
             scaler = pickle.load(s_file)
         return model, scaler
-    except:
-        st.error("Model assets not found.")
-        return None, None
+    except: return None, None
 
 model, scaler = load_assets()
 
-# 4. Sidebar - Identification
+# 3. CLEAN & PROFESSIONAL SIDEBAR
 with st.sidebar:
-    st.title("🚀 Project Info")
-    st.markdown("### **Developer**")
-    st.info("Aditya Atmaram")
-    st.write("Mechatronics Engineering, MPSTME")
-    st.write("AI & Data Science, BIA")
+    st.image("https://cdn-icons-png.flaticon.com/512/3135/3135715.png", width=80) # Generic Profile Icon
+    st.title("Aditya Atmaram")
+    st.caption("Mechatronics Engineer | AI & Data Science Specialist")
     st.markdown("---")
-    st.write("This tool uses a Random Forest Classifier to evaluate water safety based on 9 physicochemical metrics.")
+    
+    st.subheader("📊 Model Performance")
+    # Custom Metric Cards for a professional look
+    st.markdown("""
+        <div class="metric-card">
+            <small>Winning Algorithm</small><br>
+            <strong>Random Forest Classifier</strong>
+        </div>
+        <div class="metric-card">
+            <small>Model Accuracy</small><br>
+            <strong>65%</strong>
+        </div>
+        <div class="metric-card">
+            <small>Weighted F1-Score</small><br>
+            <strong>0.64</strong>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    st.subheader("🏫 Education")
+    st.markdown("""
+    * **MPSTME** (B.Tech Mechatronics)
+    * **BIA** (Diploma in AI & DS)
+    """)
 
-# 5. Main Header
-st.title("💧 Water Quality Analysis System")
+# 4. Main App Content
+st.title("💧 Water Potability Analysis")
+st.write("Determine water safety by analyzing chemical and physical parameters using machine learning.")
 st.markdown("---")
 
-# 6. User Input Section
-st.markdown("### 🛠️ Enter Water Parameters")
+# Input Section
 col1, col2, col3 = st.columns(3)
-
 with col1:
     ph = st.number_input("pH Level", 0.0, 14.0, 7.0)
     hardness = st.number_input("Hardness (mg/L)", value=196.36)
     solids = st.number_input("Solids (ppm)", value=22014.0)
-
 with col2:
     chloramines = st.number_input("Chloramines (ppm)", value=7.12)
     sulfate = st.number_input("Sulfate (mg/L)", value=333.60)
     conductivity = st.number_input("Conductivity (μS/cm)", value=426.20)
-
 with col3:
     organic_carbon = st.number_input("Organic Carbon (ppm)", value=14.28)
     trihalomethanes = st.number_input("Trihalomethanes (μg/L)", value=66.40)
     turbidity = st.number_input("Turbidity (NTU)", value=3.96)
 
-# 7. Analysis Logic
-if st.button("Run Diagnostic Analysis"):
-    input_data = np.array([[ph, hardness, solids, chloramines, sulfate, 
-                            conductivity, organic_carbon, trihalomethanes, turbidity]])
-    
-    scaled_input = scaler.transform(input_data)
-    prediction = model.predict(scaled_input)[0]
-    
-    st.markdown("---")
-    
-    if prediction == 1:
-        st.balloons()
-        st.success("### ✅ Result: Potable (Safe for Consumption)")
-        if lottie_water:
-            st_lottie(lottie_water, height=150)
-    else:
-        st.error("### ❌ Result: Not Potable (Unsafe)")
-        if lottie_warning:
-            st_lottie(lottie_warning, height=150)
+# 5. Prediction & Logic
+if st.button("Analyze Water Sample"):
+    if model and scaler:
+        input_data = np.array([[ph, hardness, solids, chloramines, sulfate, 
+                                conductivity, organic_carbon, trihalomethanes, turbidity]])
+        scaled_input = scaler.transform(input_data)
+        prediction = model.predict(scaled_input)[0]
         
-        # --- NEW: Parameter Analysis Section ---
-        st.subheader("🔍 Analysis of Non-Potability")
-        st.write("The following parameters are outside the typical recommended safety ranges:")
+        st.markdown("---")
         
-        # Checking against standard WHO/EPA guidelines
-        issues = []
-        if not (6.5 <= ph <= 8.5):
-            issues.append(f"• **pH Level ({ph}):** Outside safe range (6.5 - 8.5). Extreme pH can be corrosive or impact taste.")
-        if chloramines > 4.0:
-            issues.append(f"• **Chloramines ({chloramines} ppm):** Higher than the recommended limit of 4.0 ppm.")
-        if sulfate > 250.0:
-            issues.append(f"• **Sulfate ({sulfate} mg/L):** High sulfate levels can cause a laxative effect and bitter taste.")
-        if solids > 1000.0:
-            issues.append(f"• **Total Dissolved Solids ({solids} ppm):** High TDS indicates heavy mineralization or contamination.")
-        if turbidity > 5.0:
-            issues.append(f"• **Turbidity ({turbidity} NTU):** High turbidity can shield bacteria from disinfection.")
-
-        if issues:
-            for issue in issues:
-                st.warning(issue)
+        if prediction == 1:
+            st.balloons()
+            st.success("### ✅ Result: Potable (Safe for Consumption)")
+            if lottie_water: st_lottie(lottie_water, height=150)
         else:
-            st.info("The model determined this sample is unsafe based on a complex combination of all parameters (Multivariate Analysis), even though individual levels may seem near-normal.")
+            st.error("### ❌ Result: Not Potable (Unsafe)")
+            if lottie_warning: st_lottie(lottie_warning, height=150)
+            
+            # Parameter Analysis (Highlighting reasons for non-potability)
+            st.subheader("🔍 Parameter Analysis (Risk Factors)")
+            st.info("The following inputs deviate from standard safety benchmarks:")
+            
+            issues_found = False
+            if not (6.5 <= ph <= 8.5):
+                st.warning(f"⚠️ **pH Level ({ph}):** Outside WHO range (6.5 - 8.5).")
+                issues_found = True
+            if chloramines > 4.0:
+                st.warning(f"⚠️ **Chloramines ({chloramines} ppm):** Exceeds safe drinking limit of 4.0 ppm.")
+                issues_found = True
+            if sulfate > 250.0:
+                st.warning(f"⚠️ **Sulfate ({sulfate} mg/L):** High levels (>250 mg/L) can cause gastrointestinal issues.")
+                issues_found = True
+            if solids > 1000.0:
+                st.warning(f"⚠️ **Total Dissolved Solids ({solids} ppm):** High TDS levels (>1000) indicate high mineralization.")
+                issues_found = True
+            
+            if not issues_found:
+                st.warning("⚠️ **Complex Interaction:** While individual parameters appear borderline, the model's multivariate analysis suggests chemical instability.")
+    else:
+        st.error("Assets not loaded.")
 
-# 8. Footer
 st.markdown("---")
 st.caption("Developed by Aditya Atmaram | Mechatronics & AI Engineering Portfolio")
