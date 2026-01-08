@@ -17,7 +17,6 @@ st.markdown("""
     div.stButton > button { background-color: #00d4ff !important; color: #0e1117 !important; font-weight: bold; width: 100%; height: 3em; border-radius: 10px; }
     h1, h2, h3, p, label, .stMarkdown { color: white !important; }
     .stSlider label { color: #00d4ff !important; font-weight: bold; }
-    /* Sidebar Metric Styling */
     .stat-box { background: rgba(0, 212, 255, 0.1); padding: 10px; border-radius: 8px; border: 1px solid rgba(0, 212, 255, 0.3); margin-bottom: 10px; }
     </style>
     """, unsafe_allow_html=True)
@@ -40,28 +39,13 @@ with st.sidebar:
     st.write("👤 **Aditya Atmaram**")
     st.caption("B.Tech Mechatronics | MPSTME")
     st.caption("AI & Data Science | BIA")
-    
     st.markdown("---")
     st.markdown("### 📊 Model Performance")
-    
-    # Clean Statistics Display
     st.markdown("""
-    <div class="stat-box">
-        <small>Algorithm</small><br><b>Random Forest</b>
-    </div>
-    <div class="stat-box">
-        <small>Test Accuracy</small><br><b>65%</b>
-    </div>
-    <div class="stat-box">
-        <small>F1-Score (Weighted)</small><br><b>0.64</b>
-    </div>
-    <div class="stat-box">
-        <small>Precision (Non-Potable)</small><br><b>0.69</b>
-    </div>
+    <div class="stat-box"><small>Algorithm</small><br><b>Random Forest</b></div>
+    <div class="stat-box"><small>Test Accuracy</small><br><b>65%</b></div>
+    <div class="stat-box"><small>F1-Score</small><br><b>0.64</b></div>
     """, unsafe_allow_html=True)
-    
-    st.info("Performance evaluated on a 656-sample test set.")
-    st.markdown("---")
     st.success("System: Operational")
 
 # 5. Header
@@ -87,7 +71,14 @@ with c3:
 if st.button("⚡ RUN DIAGNOSTIC"):
     if model and scaler:
         arr = np.array([[v1,v2,v3,v4,v5,v6,v7,v8,v9]])
-        pred = model.predict(scaler.transform(arr))[0]
+        scaled_data = scaler.transform(arr)
+        
+        # DYNAMIC CALCULATION
+        pred = model.predict(scaled_data)[0]
+        prob = model.predict_proba(scaled_data)[0]
+        # Gauge value is now the probability of being potable (Index 1)
+        confidence_value = round(prob[1] * 100, 2)
+        
         st.markdown("---")
         res, viz = st.columns([1, 1.5])
         
@@ -97,10 +88,23 @@ if st.button("⚡ RUN DIAGNOSTIC"):
             else: st.error("### ❌ RESULT: UNSAFE")
             st.markdown('</div>', unsafe_allow_html=True)
             
-            fig = go.Figure(go.Indicator(mode="gauge+number", value=(100 if pred==1 else 25), gauge={'bar':{'color':"#00d4ff"}}))
-            fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=200, margin=dict(l=20, r=20, t=40, b=20))
+            # THE DYNAMIC GAUGE
+            fig = go.Figure(go.Indicator(
+                mode="gauge+number", 
+                value=confidence_value, 
+                title={'text': "Potability Probability", 'font': {'size': 14}},
+                gauge={
+                    'axis': {'range': [0, 100]},
+                    'bar': {'color': "#00d4ff"},
+                    'steps': [
+                        {'range': [0, 50], 'color': "rgba(255, 0, 0, 0.1)"},
+                        {'range': [50, 100], 'color': "rgba(0, 255, 0, 0.1)"}
+                    ]
+                }
+            ))
+            fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=250, margin=dict(l=20, r=20, t=50, b=20))
             st.plotly_chart(fig, use_container_width=True)
-            st.write("**Safety Rating:** Visual status of the AI prediction.")
+            st.write(f"**AI Confidence:** The model is {confidence_value}% certain this water is potable.")
             
         with viz:
             st.markdown("### 📋 Compliance Check")
@@ -111,7 +115,7 @@ if st.button("⚡ RUN DIAGNOSTIC"):
                 "Status": ["✅ Pass" if 6.5<=v1<=8.5 else "🛑 Fail", "✅ Pass" if v5<=250 else "🛑 Fail", "✅ Pass" if v4<=4 else "🛑 Fail", "✅ Pass" if v9<=5 else "🛑 Fail"]
             })
             st.table(df)
-            st.write("**Expert Validation:** This table verifies the chemical levels against World Health Organization standards.")
+            st.write("**Safety Validation:** Cross-referencing current inputs against international standards.")
     else: st.error("Assets missing!")
 
 st.markdown("---")
