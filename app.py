@@ -102,4 +102,61 @@ if st.button("⚡ EXECUTE SYSTEM DIAGNOSTIC"):
         
         ai_p = model.predict(scaled_features)[0]
         probs = model.predict_proba(scaled_features)[0]
-        conf_val = round(probs
+        conf_val = round(probs[1] * 100, 2)
+        
+        issues = []
+        if not (6.5 <= v1 <= 8.5): issues.append(f"pH Imbalance: {v1} (Safe: 6.5-8.5)")
+        if v4 > 4.0: issues.append(f"Chloramine Toxicity: {v4} ppm (Safe: <4.0)")
+        if v5 > 250.0: issues.append(f"Sulfate Excess: {v5} mg/L (Safe: <250)")
+        if v9 > 5.0: issues.append(f"High Turbidity: {v9} NTU (Safe: <5.0)")
+        
+        final_res = 0 if issues else ai_p
+
+        st.markdown("---")
+        res_col, viz_col = st.columns([1, 1.5])
+        
+        with res_col:
+            st.markdown('<div class="glass-card">', unsafe_allow_html=True)
+            if final_res == 1:
+                st.success("### ✅ STATUS: POTABLE")
+                st.balloons()
+            else:
+                st.error("### ❌ STATUS: UNSAFE")
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            fig = go.Figure(go.Indicator(
+                mode="gauge+number", 
+                value=conf_val, 
+                title={'text': "AI Reliability Index", 'font': {'size': 14}}, 
+                gauge={'axis': {'range': [0, 100]}, 'bar': {'color': "#00d4ff"}}
+            ))
+            fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=230, margin=dict(l=20,r=20,t=50,b=20))
+            st.plotly_chart(fig, use_container_width=True)
+            
+        with viz_col:
+            if final_res == 0:
+                st.markdown("### 🔍 Root Cause Analysis")
+                if issues:
+                    st.warning("Hardware Override: Sensor violations detected")
+                    for i in issues:
+                        st.write(f"🛑 {i}")
+                else:
+                    st.info("AI Anomaly: Pattern recognized as hazardous.")
+                st.markdown("---")
+            
+            st.markdown("### 📋 Validation Matrix")
+            df_status = pd.DataFrame({
+                "Sensor Node": ["pH", "Sulfate", "Chloramine", "Turbidity"],
+                "Actual": [v1, v5, v4, v9],
+                "Setpoint": ["6.5-8.5", "<250", "<4.0", "<5.0"],
+                "Compliance": ["✅ PASS" if 6.5<=v1<=8.5 else "🛑 FAIL", 
+                               "✅ PASS" if v5<=250 else "🛑 FAIL", 
+                               "✅ PASS" if v4<=4 else "🛑 FAIL", 
+                               "✅ PASS" if v9<=5 else "🛑 FAIL"]
+            })
+            st.table(df_status)
+    else:
+        st.error("Diagnostic Assets Offline. Check Repository.")
+
+st.markdown("---")
+st.caption("Aditya Atmaram | Mechatronics & AI Engineering | MPSTME-BIA 2026")
