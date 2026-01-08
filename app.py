@@ -114,4 +114,13 @@ if st.button("⚡ RUN SYSTEM DIAGNOSTIC"):
             
             st.markdown("### 📋 Sensor Compliance Table")
             df = pd.DataFrame({
-                "Sensor": ["pH", "Sulfate", "Chloramine",
+                "Sensor": ["pH", "Sulfate", "Chloramine", "Turbidity"],
+                "Reading": [v1, v5, v4, v9],
+                "Standard": ["6.5-8.5", "<250", "<4.0", "<5.0"],
+                "Status": ["✅ Pass" if 6.5<=v1<=8.5 else "🛑 Critical", "✅ Pass" if v5<=250 else "🛑 Critical", "✅ Pass" if v4<=4 else "🛑 Critical", "✅ Pass" if v9<=5 else "🛑 Critical"]
+            })
+            st.table(df)
+    else: st.error("Assets missing!")
+
+st.markdown("---")
+st.caption("Aditya Atmaram | MPSTME Mechatronics Portfolio | 2026")
