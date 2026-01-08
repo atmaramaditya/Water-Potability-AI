@@ -5,4 +5,5 @@ scikit-learn
 xgboost
 requests
 streamlit-lottie
+plotly
 
