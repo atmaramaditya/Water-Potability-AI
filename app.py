@@ -12,7 +12,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. CSS: High Contrast & Glassmorphism
+# 2. Advanced CSS for Visibility and Innovation
 st.markdown("""
     <style>
     .stApp {
@@ -28,78 +28,71 @@ st.markdown("""
         background: rgba(255, 255, 255, 0.1);
         backdrop-filter: blur(15px);
         border-radius: 15px;
-        padding: 25px;
+        padding: 20px;
         border: 1px solid rgba(0, 212, 255, 0.3);
         margin-bottom: 20px;
     }
     div.stButton > button:first-child {
         background-color: #00d4ff !important;
         color: #0e1117 !important;
-        font-size: 20px !important;
         font-weight: bold !important;
-        height: 3.5em !important;
-        border-radius: 10px !important;
-        border: none !important;
-        box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+        width: 100%;
+        height: 3.5em;
+        border-radius: 10px;
+        border: none;
     }
-    h1, h2, h3, p, span, label, .stMarkdown {
-        color: white !important;
-    }
-    .stSlider label {
-        font-weight: bold !important;
-        color: #00d4ff !important;
-    }
+    h1, h2, h3, p, label, .stMarkdown { color: white !important; }
+    .stSlider label { color: #00d4ff !important; font-weight: bold; }
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Asset Loading (Fixed Syntax)
+# 3. Secure Asset Loading
 @st.cache_resource
 def load_assets():
-    base_path = os.path.dirname(__file__)
-    model_path = os.path.join(base_path, 'water_model.pkl')
-    scaler_path = os.path.join(base_path, 'scaler.pkl')
-    
+    base = os.path.dirname(__file__)
     try:
-        with open(model_path, 'rb') as m_file:
-            model = pickle.load(m_file)
-        with open(scaler_path, 'rb') as s_file:
-            scaler = pickle.load(s_file)
-        return model, scaler
+        with open(os.path.join(base, 'water_model.pkl'), 'rb') as f1:
+            m = pickle.load(f1)
+        with open(os.path.join(base, 'scaler.pkl'), 'rb') as f2:
+            s = pickle.load(f2)
+        return m, s
     except Exception as e:
-        st.error(f"Error loading assets: {e}")
+        st.error(f"Asset Error: {e}")
         return None, None
 
 model, scaler = load_assets()
 
-# 4. SIDEBAR
+# 4. Professional Sidebar
 with st.sidebar:
-    st.markdown("<h1 style='text-align: center; color: #00d4ff;'>💧 HydroGuard</h1>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center; color: #00d4ff;'>💧 HydroGuard</h2>", unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown("### 👨‍🎓 Project Developer")
-    st.write("**Aditya Atmaram**")
-    st.write("B.Tech Mechatronics Candidate")
+    st.write("👤 **Developer:** Aditya Atmaram")
+    st.write("🎓 **Status:** B.Tech Mechatronics Candidate")
     st.caption("MPSTME | BIA (AI & Data Science)")
     st.markdown("---")
-    st.subheader("📡 System Status")
-    st.success("Random Forest: Online")
-    st.info("Accuracy: 65%")
+    st.success("System: Online")
+    st.info("Model: Random Forest")
 
-# 5. MAIN CONTENT
+# 5. Dashboard Header
 st.markdown("""
-    <div style="background: rgba(0, 212, 255, 0.1); padding: 25px; border-radius: 15px; border-left: 10px solid #00d4ff; margin-bottom: 25px;">
-        <h1 style='margin:0; color: white;'>Intelligent Water Quality Monitor</h1>
-        <p style='margin:0; opacity: 0.9; color: #00d4ff;'>Mechatronics & Data Science Diagnostic Dashboard</p>
+    <div style="background: rgba(0, 212, 255, 0.1); padding: 20px; border-radius: 15px; border-left: 8px solid #00d4ff; margin-bottom: 20px;">
+        <h1 style='margin:0;'>Intelligent Water Quality Monitor</h1>
+        <p style='margin:0; color: #00d4ff;'>AI-Driven Diagnostic System</p>
     </div>
     """, unsafe_allow_html=True)
 
-# 6. SLIDERS
-st.markdown("### 🎛️ Digital Sensor Simulation")
+# 6. Interactive Sensor Sliders
+st.markdown("### 🛰️ Sensor Inputs")
 c1, c2, c3 = st.columns(3)
 with c1:
     ph = st.slider("pH Level", 0.0, 14.0, 7.0)
     hardness = st.slider("Hardness (mg/L)", 50.0, 400.0, 196.3)
     solids = st.slider("Solids (ppm)", 5000.0, 50000.0, 22000.0)
 with c2:
-    chloramines = st.slider("Chloramines (ppm)", 0.0, 15.0, 7.1)
+    chlor = st.slider("Chloramines (ppm)", 0.0, 15.0, 7.1)
     sulfate = st.slider("Sulfate (mg/L)", 100.0, 500.0, 333.6)
-    conductivity = st.slider("Conductivity (μS/cm)", 100.0, 800.0,
+    cond = st.slider("Conductivity (μS/cm)", 100.0, 800.0, 426.2)
+with c3:
+    carb = st.slider("Organic Carbon (ppm)", 0.0, 30.0, 14.2)
+    trihal = st.slider("Trihalomethanes (μg/L)", 0.0, 130.0, 66.4)
+    turb = st.slider("Turbidity
