@@ -66,17 +66,31 @@ if st.button("⚡ RUN DIAGNOSTIC"):
         pred = model.predict(scaler.transform(arr))[0]
         st.markdown("---")
         res, viz = st.columns([1, 1.5])
+        
         with res:
             st.markdown('<div class="glass-card">', unsafe_allow_html=True)
-            if pred == 1: st.success("### ✅ POTABLE")
-            else: st.error("### ❌ UNSAFE")
+            if pred == 1: st.success("### ✅ RESULT: POTABLE")
+            else: st.error("### ❌ RESULT: UNSAFE")
             st.markdown('</div>', unsafe_allow_html=True)
+            
+            # THE GAUGE
             fig = go.Figure(go.Indicator(mode="gauge+number", value=(100 if pred==1 else 25), gauge={'bar':{'color':"#00d4ff"}}))
-            fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', font={'color':"white"}, height=200)
+            fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', font={'color': "white"}, height=200, margin=dict(l=20, r=20, t=40, b=20))
             st.plotly_chart(fig, use_container_width=True)
+            
+            st.write("**Confidence Meter:** This gauge represents the model's safety rating. 100% indicates the sample is classified as safe for consumption.")
+            
         with viz:
-            df = pd.DataFrame({"Param": ["pH", "Sulfate", "Chlor", "Turbid"], "Value": [v1, v5, v4, v9], "Status": ["✅" if 6.5<=v1<=8.5 else "❌", "✅" if v5<=250 else "❌", "✅" if v4<=4 else "❌", "✅" if v9<=5 else "❌"]})
+            st.markdown("### 📋 Compliance Check")
+            df = pd.DataFrame({
+                "Parameter": ["pH Balance", "Sulfate Level", "Chlorine", "Clarity"],
+                "Value": [v1, v5, v4, v9],
+                "WHO Limit": ["6.5 - 8.5", "< 250 mg/L", "< 4.0 ppm", "< 5.0 NTU"],
+                "Status": ["✅ Pass" if 6.5<=v1<=8.5 else "🛑 Fail", "✅ Pass" if v5<=250 else "🛑 Fail", "✅ Pass" if v4<=4 else "🛑 Fail", "✅ Pass" if v9<=5 else "🛑 Fail"]
+            })
             st.table(df)
+            st.write("**Why this table?** While the AI looks at all 9 sensors together, this table highlights the most critical safety benchmarks set by the WHO. A 'Fail' status indicates the specific chemical causing the safety risk.")
     else: st.error("Assets missing!")
 
-st.caption("Aditya Atmaram | Mechatronics Portfolio")
+st.markdown("---")
+st.caption("Aditya Atmaram | Mechatronics Portfolio | 2026")
