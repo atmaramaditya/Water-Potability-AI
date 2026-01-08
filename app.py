@@ -68,26 +68,17 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     st.success("System: Operational")
 
-# 5. UNIQUE DUAL-CREDENTIAL HEADER
+# 5. MINIMALIST ENGINEERING HEADER
 st.markdown("""
     <div class="hero-section">
         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
             <span class="system-badge">System ID: HG-2026-V1</span>
-            <span class="system-badge" style="background-color: #ffaa00; color: #000;">DOP: JAN-2026</span>
+            <span class="system-badge" style="background-color: #28a745; color: #fff;">Status: Active</span>
         </div>
-        <h1 style='margin:0; font-size: 42px; letter-spacing: -1px;'>HydroGuard <span style='color:#00d4ff;'>Intelligence</span></h1>
-        <p style='font-size: 18px; margin-top: 5px; opacity: 0.9;'>
+        <h1 style='margin:0; font-size: 48px; letter-spacing: -2px;'>HydroGuard <span style='color:#00d4ff;'>Intelligence</span></h1>
+        <p style='font-size: 18px; margin-top: 5px; opacity: 0.7; font-weight: 300;'>
             Neural-Network Assisted Water Potability Analysis & Sensor Diagnostics
         </p>
-        <div style='border-top: 1px solid rgba(0,212,255,0.3); margin-top: 15px; padding-top: 10px;'>
-            <p style='font-size: 14px; margin:0;'>
-                <b style='color:#00d4ff;'>Mechatronics Engineering:</b> Mukesh Patel School of Technology Management and Engineering (MPSTME)
-            </p>
-            <p style='font-size: 14px; margin:0;'>
-                <b style='color:#ffaa00;'>AI & Data Science:</b> Boston Institute of Analytics (BIA)
-            </p>
-            <p style='font-size: 13px; opacity: 0.7; margin-top: 5px;'>Developer: Aditya Atmaram</p>
-        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -173,4 +164,5 @@ if st.button("⚡ EXECUTE SYSTEM DIAGNOSTIC"):
 
 st.markdown("---")
 st.caption("Aditya Atmaram | Mechatronics & AI Engineering | MPSTME-BIA 2026")
+
 
