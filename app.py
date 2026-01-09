@@ -8,19 +8,37 @@ import plotly.graph_objects as go
 # 1. Page Config
 st.set_page_config(page_title="HydroGuard AI | Aditya Atmaram", page_icon="💧", layout="wide")
 
-# 2. CSS Styling 
+# 2. CSS Styling
 st.markdown("""
     <style>
-    .stApp { 
-        background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
-        url("https://images.unsplash.com/photo-1534274988757-a28bf1f539cf?q=80&w=2000&auto=format&fit=crop"); 
-        background-size: cover; 
+    /* Target the main container and the background layer */
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+        url("https://images.unsplash.com/photo-1438449805896-28a666819a20?q=80&w=2000&auto=format&fit=crop");
+        background-size: cover;
+        background-position: center;
         background-attachment: fixed;
     }
-    [data-testid="stSidebar"] { background-color: #0e1117 !important; border-right: 2px solid #00d4ff; }
-    .glass-card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 15px; padding: 20px; border: 1px solid rgba(0,212,255,0.3); margin-bottom: 20px;}
+
+    /* Make the intermediate container transparent so the background is visible */
+    [data-testid="stHeader"], [data-testid="stAppViewContainer"] > .main {
+        background-color: transparent !important;
+    }
+
+    [data-testid="stSidebar"] { 
+        background-color: #0e1117 !important; 
+        border-right: 2px solid #00d4ff; 
+    }
+
+    .glass-card { 
+        background: rgba(255,255,255,0.05); 
+        backdrop-filter: blur(15px); 
+        border-radius: 15px; 
+        padding: 20px; 
+        border: 1px solid rgba(0,212,255,0.3); 
+        margin-bottom: 20px;
+    }
     
-    /* Unique Header Styling */
     .hero-section {
         background: linear-gradient(90deg, rgba(0,212,255,0.2) 0%, rgba(0,0,0,0) 100%);
         padding: 30px;
@@ -28,6 +46,7 @@ st.markdown("""
         border-radius: 0px 15px 15px 0px;
         margin-bottom: 30px;
     }
+
     .system-badge {
         background-color: #00d4ff;
         color: #0e1117;
@@ -168,6 +187,7 @@ if st.button("⚡ EXECUTE SYSTEM DIAGNOSTIC"):
 
 st.markdown("---")
 st.caption("Aditya Atmaram | Mechatronics & AI Engineering | MPSTME-BIA 2026")
+
 
 
 
